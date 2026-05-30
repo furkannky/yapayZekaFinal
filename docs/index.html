@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Akıllı Kalp Sağlığı Risk Analiz Portalı</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="background-animation"></div>
     
-    <div class="container glass-panel">
+    <div class="container clinical-panel">
         <header>
-            <div class="logo">🏥</div>
-            <h1>Akıllı Kalp Sağlığı Portalı</h1>
-            <p>Gerçek Zamanlı Yapay Zeka Teşhis Sistemi (CNN + Attention)</p>
+            <div class="header-content">
+                <div class="logo">🏥</div>
+                <div>
+                    <h1>Kardiyoloji Teşhis Asistanı</h1>
+                    <p>Yapay Zeka Destekli Erken Uyarı ve Risk Analiz Sistemi</p>
+                </div>
+            </div>
             
             <div class="mode-toggle">
                 <span class="mode-label" id="mode-patient-label">👤 Hasta Modu</span>
                 <label class="switch">
-                    <input type="checkbox" id="mode-switch"> <!-- Unchecked: Patient, Checked: Doctor -->
+                    <input type="checkbox" id="mode-switch">
                     <span class="slider round"></span>
                 </label>
                 <span class="mode-label" id="mode-doctor-label">👨‍⚕️ Doktor Modu</span>
@@ -27,7 +31,8 @@
         </header>
 
         <main class="dashboard">
-            <div class="form-section">
+            <!-- Sol Panel: Form -->
+            <div class="form-section card">
                 <h2>📋 Klinik Bulgular</h2>
                 <form id="prediction-form">
                     <div class="form-group">
@@ -41,24 +46,24 @@
                     <div class="form-group radio-group">
                         <label class="dynamic-label" data-patient="Cinsiyetiniz" data-doctor="Cinsiyet (Sex)">Cinsiyetiniz</label>
                         <div class="options">
-                            <label><input type="radio" name="sex" value="Erkek (Male)" checked> Erkek</label>
-                            <label><input type="radio" name="sex" value="Kadın (Female)"> Kadın</label>
+                            <label class="radio-btn"><input type="radio" name="sex" value="Erkek (Male)" checked> <span>Erkek</span></label>
+                            <label class="radio-btn"><input type="radio" name="sex" value="Kadın (Female)"> <span>Kadın</span></label>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="form-group">
-                            <label for="trestbps" class="dynamic-label has-tooltip" data-patient="Büyük Tansiyon (Sistolik)" data-doctor="Dinlenme Kan Basıncı (mmHg)" title="Tansiyon ölçtürdüğünüzde söylenen yüksek rakam (örn. 120)">Büyük Tansiyon (Sistolik) ℹ️</label>
+                            <label for="trestbps" class="dynamic-label has-tooltip" data-patient="Büyük Tansiyon (Sistolik)" data-doctor="Dinlenme Kan Basıncı (mmHg)" title="Tansiyon ölçtürdüğünüzde söylenen yüksek rakam (örn. 120)">Büyük Tansiyon (Sistolik)</label>
                             <input type="number" id="trestbps" value="120" required>
                         </div>
                         <div class="form-group">
-                            <label for="chol" class="dynamic-label has-tooltip" data-patient="Kolesterol Değeri" data-doctor="Serum Kolesterol (mg/dl)" title="Kan tahlilinizdeki Total Kolesterol değeri (örn. 200)">Kolesterol Değeri ℹ️</label>
+                            <label for="chol" class="dynamic-label has-tooltip" data-patient="Kolesterol Değeri" data-doctor="Serum Kolesterol (mg/dl)" title="Kan tahlilinizdeki Total Kolesterol değeri (örn. 200)">Kolesterol Değeri</label>
                             <input type="number" id="chol" value="200" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="cp_type" class="dynamic-label has-tooltip" data-patient="Göğüs Ağrısı Şikayeti" data-doctor="Göğüs Ağrısı Tipi (Chest Pain Type)" title="Göğsünüzde hissettiğiniz ağrı türü.">Göğüs Ağrısı Şikayeti ℹ️</label>
+                        <label for="cp_type" class="dynamic-label has-tooltip" data-patient="Göğüs Ağrısı Şikayeti" data-doctor="Göğüs Ağrısı Tipi (Chest Pain Type)" title="Göğsünüzde hissettiğiniz ağrı türü.">Göğüs Ağrısı Şikayeti</label>
                         <select id="cp_type">
                             <option value="Asemptomatik (Asymptomatic)" class="dyn-opt" data-patient="Ağrı Yok / Hissetmiyorum" data-doctor="Asemptomatik (Asymptomatic)">Ağrı Yok / Hissetmiyorum</option>
                             <option value="Atipik Anjin (Atypical Angina)" class="dyn-opt" data-patient="Farklı Sebepli Ağrı" data-doctor="Atipik Anjin (Atypical Angina)">Farklı Sebepli Ağrı</option>
@@ -68,15 +73,15 @@
                     </div>
 
                     <div class="form-group radio-group">
-                        <label class="dynamic-label has-tooltip" data-patient="Hareket Edince Göğüs Ağrısı Oluyor mu?" data-doctor="Egzersize Bağlı Göğüs Sıkışması? (Exang)" title="Yürürken, merdiven çıkarken veya efor sarf ederken göğsünüzde sıkışma hissediyor musunuz?">Hareket Edince Göğüs Ağrısı Oluyor mu? ℹ️</label>
+                        <label class="dynamic-label has-tooltip" data-patient="Hareket Edince Göğüs Ağrısı Oluyor mu?" data-doctor="Egzersize Bağlı Göğüs Sıkışması? (Exang)" title="Yürürken, merdiven çıkarken veya efor sarf ederken göğsünüzde sıkışma hissediyor musunuz?">Hareket Edince Göğüs Ağrısı Oluyor mu?</label>
                         <div class="options">
-                            <label><input type="radio" name="exang" value="Evet (Yes)"> Evet</label>
-                            <label><input type="radio" name="exang" value="Hayır (No)" checked> Hayır</label>
+                            <label class="radio-btn"><input type="radio" name="exang" value="Evet (Yes)"> <span>Evet</span></label>
+                            <label class="radio-btn"><input type="radio" name="exang" value="Hayır (No)" checked> <span>Hayır</span></label>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="oldpeak" class="dynamic-label has-tooltip" data-patient="Efor Testi Sonucu (Bilmiyorsanız 0 bırakın)" data-doctor="ST Depresyonu (Oldpeak)" title="EKG veya Efor testi sonucundaki ST çökmesi değeri. Bilmiyorsanız varsayılan olarak 0 bırakın.">Efor Testi Sonucu (Bilmiyorsanız 0 bırakın) ℹ️</label>
+                        <label for="oldpeak" class="dynamic-label has-tooltip" data-patient="Efor Testi Sonucu (Bilmiyorsanız 0 bırakın)" data-doctor="ST Depresyonu (Oldpeak)" title="EKG veya Efor testi sonucundaki ST çökmesi değeri. Bilmiyorsanız varsayılan olarak 0 bırakın.">Efor Testi Sonucu</label>
                         <div class="range-wrapper">
                             <input type="range" id="oldpeak" min="0.0" max="6.0" step="0.1" value="0.0" oninput="this.nextElementSibling.value = this.value">
                             <output>0.0</output>
@@ -84,18 +89,64 @@
                     </div>
 
                     <button type="submit" class="btn-primary">
-                        <span>⚡ Canlı Risk Analizi Yap</span>
+                        <span>⚡ Riski Hesapla</span>
                         <div class="spinner" id="btn-spinner"></div>
                     </button>
                 </form>
             </div>
 
-            <div class="result-section">
-                <h2>🖥️ Yapay Zeka Analiz Merkezi</h2>
-                <div id="result-box" class="result-box placeholder">
-                    <p class="waiting-text">Sol taraftan verileri girip analizi başlattığınızda sonuç burada görünecektir...</p>
+            <!-- Sağ Panel: Sonuç ve Bilgi -->
+            <div class="right-panel">
+                <div class="result-section card placeholder" id="result-box">
+                    <h2>🖥️ Yapay Zeka Teşhisi</h2>
+                    
+                    <div class="gauge-container">
+                        <div class="gauge">
+                            <div class="gauge__body">
+                                <div class="gauge__fill" id="gauge-fill"></div>
+                                <div class="gauge__cover" id="gauge-text">--%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-details">
+                        <div class="result-title" id="result-title">Analiz Bekleniyor...</div>
+                        <div class="recommendation" id="result-recommendation">Sol taraftan bilgileri girip hesaplamayı başlatın.</div>
+                    </div>
                 </div>
-                <small>Not: Bu sistem derin öğrenme modelleri kullanılarak test amaçlı geliştirilmiş bir simülasyondur.</small>
+
+                <div class="info-section card">
+                    <h3 class="dynamic-label" data-patient="🧠 Bu Sistem Nasıl Çalışıyor?" data-doctor="🧠 Model Mimarisi: CNN + Attention">🧠 Bu Sistem Nasıl Çalışıyor?</h3>
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span class="accordion-title dynamic-label" data-patient="Hangi Teknolojiyi Kullanıyoruz?" data-doctor="1D CNN Katmanları">Hangi Teknolojiyi Kullanıyoruz?</span>
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="dyn-opt" data-patient="Sistemimiz, sizin değerlerinizi binlerce geçmiş hasta verisiyle karşılaştıran ve görüntülerdeki desenleri bile tanıyan güçlü bir 'Yapay Sinir Ağı' algoritması kullanır." data-doctor="Klinik veriler, 1 Boyutlu Evrişimli Sinir Ağları (1D CNN) aracılığıyla uzamsal özellik çıkarımına tabi tutulur. Bu katmanlar, klinik bulgular arasındaki gizli non-lineer desenleri tespit eder.">Sistemimiz...</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span class="accordion-title dynamic-label" data-patient="Neye Dikkat Ediyor?" data-doctor="Attention (Dikkat) Mekanizması">Neye Dikkat Ediyor?</span>
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="dyn-opt" data-patient="Tüm bilgileri eşit değerlendirmez. Tıpkı uzman bir doktor gibi, sizin için en kritik olan veriye odaklanmasını sağlayan bir 'Dikkat (Attention)' mekanizmasına sahiptir." data-doctor="Ağ yapısına entegre edilen Softmax tabanlı Attention (Dikkat) Mekanizması, risk tahmininde ağırlığı en yüksek olan klinik parametreleri öne çıkararak modelin başarısını artırır.">Tüm bilgileri...</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span class="accordion-title dynamic-label" data-patient="Uyarı ve Yasal Uyarı" data-doctor="Klinik Yasal Uyarı">Uyarı ve Yasal Uyarı</span>
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Bu sistem yapay zeka deneyleri için tasarlanmış bir ön-analiz aracıdır. Elde edilen risk skorları gerçek bir hekim teşhisi yerine geçmez. Kalp rahatsızlığı şüpheniz varsa derhal bir sağlık kuruluşuna başvurunuz.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>

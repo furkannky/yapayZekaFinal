@@ -1,7 +1,7 @@
-// Backend API URL'si - Canlıda ve lokalde dinamik çalışır
+// Backend API URL'si
 const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
     ? "http://localhost:8000/predict" 
-    : "https://kalp-analizi-backend.onrender.com/predict"; // Render URL'sini buraya yazın
+    : "https://kalp-analizi-backend.onrender.com/predict"; 
 
 // --- Mod Geçiş (Toggle) Mantığı ---
 const modeSwitch = document.getElementById('mode-switch');
@@ -19,11 +19,13 @@ modeSwitch.addEventListener('change', function() {
         doctorLabel.classList.remove('active');
     }
 
+    // Label Güncellemeleri
     document.querySelectorAll('.dynamic-label').forEach(label => {
         const hasInfo = label.classList.contains('has-tooltip');
         label.innerHTML = isDoctor ? label.getAttribute('data-doctor') : label.getAttribute('data-patient') + (hasInfo && !isDoctor ? ' ℹ️' : '');
     });
 
+    // Select Option Güncellemeleri
     document.querySelectorAll('.dyn-opt').forEach(opt => {
         opt.innerHTML = isDoctor ? opt.getAttribute('data-doctor') : opt.getAttribute('data-patient');
     });
@@ -33,11 +35,62 @@ modeSwitch.addEventListener('change', function() {
 modeSwitch.dispatchEvent(new Event('change'));
 // -----------------------------------
 
+// --- Akordeon Mantığı ---
+document.querySelectorAll('.accordion-header').forEach(button => {
+    button.addEventListener('click', () => {
+        const accordionItem = button.parentElement;
+        const content = button.nextElementSibling;
+        
+        // Diğerlerini kapat (Opsiyonel)
+        document.querySelectorAll('.accordion-item').forEach(item => {
+            if(item !== accordionItem) {
+                item.classList.remove('active');
+                item.querySelector('.accordion-content').style.maxHeight = null;
+            }
+        });
+
+        accordionItem.classList.toggle('active');
+        if (accordionItem.classList.contains('active')) {
+            content.style.maxHeight = content.scrollHeight + "px";
+        } else {
+            content.style.maxHeight = null;
+        }
+    });
+});
+// ------------------------
+
+// --- Hız Göstergesi (Gauge) Mantığı ---
+function setGaugeValue(percentage) {
+    const gaugeFill = document.getElementById('gauge-fill');
+    const gaugeText = document.getElementById('gauge-text');
+    
+    // 0 ile 0.5 turn arası dönüş
+    const turn = percentage / 200; 
+    gaugeFill.style.transform = `rotate(${turn}turn)`;
+    gaugeText.innerText = `${percentage.toFixed(1)}%`;
+
+    // Renk Ayarı
+    if (percentage <= 20) {
+        gaugeFill.style.backgroundColor = 'var(--success)';
+        gaugeText.style.color = 'var(--success)';
+    } else if (percentage <= 50) {
+        gaugeFill.style.backgroundColor = 'var(--warning)';
+        gaugeText.style.color = 'var(--warning)';
+    } else {
+        gaugeFill.style.backgroundColor = 'var(--danger)';
+        gaugeText.style.color = 'var(--danger)';
+    }
+}
+// --------------------------------------
+
+// Form Gönderimi
 document.getElementById('prediction-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const btn = document.querySelector('.btn-primary');
     const resultBox = document.getElementById('result-box');
+    const resultTitle = document.getElementById('result-title');
+    const resultRec = document.getElementById('result-recommendation');
     
     // UI Loading State
     btn.classList.add('loading');
@@ -65,50 +118,29 @@ document.getElementById('prediction-form').addEventListener('submit', async func
 
         const data = await response.json();
 
-        // Animate result out before showing new
-        resultBox.style.opacity = '0';
-        resultBox.style.transform = 'scale(0.95)';
-
+        // UI Güncelleme
+        resultBox.classList.remove('placeholder');
+        
+        // Animasyonu tetiklemek için önce 0'a çek, sonra değere ayarla
+        setGaugeValue(0);
         setTimeout(() => {
-            resultBox.classList.remove('placeholder', 'success', 'danger');
-            
-            if (data.is_high_risk) {
-                resultBox.classList.add('danger');
-                resultBox.innerHTML = `
-                    <div class="result-icon">🚨</div>
-                    <div class="result-title">YÜKSEK RİSK</div>
-                    <div class="risk-score">%${data.risk_percentage}</div>
-                    <div class="recommendation">
-                        <strong>Yapay Zeka Risk Skoru Yüksek!</strong><br><br>
-                        En yakın zamanda bir kardiyoloji uzmanına başvurulması tavsiye edilir. Lütfen ihmal etmeyin.
-                    </div>
-                `;
-            } else {
-                resultBox.classList.add('success');
-                resultBox.innerHTML = `
-                    <div class="result-icon">✅</div>
-                    <div class="result-title">DÜŞÜK RİSK / SAĞLIKLI</div>
-                    <div class="risk-score">%${data.risk_percentage}</div>
-                    <div class="recommendation">
-                        <strong>Yapay Zeka Risk Skoru Düşük.</strong><br><br>
-                        Sağlıklı yaşam tarzınızı ve düzenli egzersizleri sürdürmeye devam edin.
-                    </div>
-                `;
-            }
+            setGaugeValue(data.risk_percentage);
+        }, 100);
 
-            // Animate result in
-            requestAnimationFrame(() => {
-                resultBox.style.opacity = '1';
-                resultBox.style.transform = 'scale(1)';
-            });
-
-        }, 300); // Wait for fade out
+        if (data.is_high_risk) {
+            resultTitle.innerText = "YÜKSEK RİSK";
+            resultTitle.className = "result-title danger-text";
+            resultRec.innerHTML = `<strong>Yapay Zeka Risk Skoru Yüksek!</strong><br>En yakın zamanda bir kardiyoloji uzmanına başvurulması tavsiye edilir. Lütfen ihmal etmeyin.`;
+        } else {
+            resultTitle.innerText = "DÜŞÜK RİSK / SAĞLIKLI";
+            resultTitle.className = "result-title success-text";
+            resultRec.innerHTML = `<strong>Yapay Zeka Risk Skoru Düşük.</strong><br>Sağlıklı yaşam tarzınızı ve düzenli egzersizleri sürdürmeye devam edin.`;
+        }
 
     } catch (error) {
         console.error('Error:', error);
         alert('Sunucuya bağlanılamadı. Lütfen backend servisinin çalıştığından emin olun.');
     } finally {
-        // Reset UI Loading State
         btn.classList.remove('loading');
         btn.disabled = false;
     }
