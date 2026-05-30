@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Kalp Sağlığı Risk Analiz Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container glass-panel">
+        <header>
+            <div class="logo">🏥</div>
+            <h1>Akıllı Kalp Sağlığı Portalı</h1>
+            <p>Gerçek Zamanlı Yapay Zeka Teşhis Sistemi (CNN + Attention)</p>
+            
+            <div class="mode-toggle">
+                <span class="mode-label" id="mode-patient-label">👤 Hasta Modu</span>
+                <label class="switch">
+                    <input type="checkbox" id="mode-switch"> <!-- Unchecked: Patient, Checked: Doctor -->
+                    <span class="slider round"></span>
+                </label>
+                <span class="mode-label" id="mode-doctor-label">👨‍⚕️ Doktor Modu</span>
+            </div>
+        </header>
+
+        <main class="dashboard">
+            <div class="form-section">
+                <h2>📋 Klinik Bulgular</h2>
+                <form id="prediction-form">
+                    <div class="form-group">
+                        <label for="age" class="dynamic-label" data-patient="Yaşınız" data-doctor="Yaş (Age)">Yaşınız</label>
+                        <div class="range-wrapper">
+                            <input type="range" id="age" min="1" max="100" value="45" oninput="this.nextElementSibling.value = this.value">
+                            <output>45</output>
+                        </div>
+                    </div>
+
+                    <div class="form-group radio-group">
+                        <label class="dynamic-label" data-patient="Cinsiyetiniz" data-doctor="Cinsiyet (Sex)">Cinsiyetiniz</label>
+                        <div class="options">
+                            <label><input type="radio" name="sex" value="Erkek (Male)" checked> Erkek</label>
+                            <label><input type="radio" name="sex" value="Kadın (Female)"> Kadın</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="trestbps" class="dynamic-label has-tooltip" data-patient="Büyük Tansiyon (Sistolik)" data-doctor="Dinlenme Kan Basıncı (mmHg)" title="Tansiyon ölçtürdüğünüzde söylenen yüksek rakam (örn. 120)">Büyük Tansiyon (Sistolik) ℹ️</label>
+                            <input type="number" id="trestbps" value="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="chol" class="dynamic-label has-tooltip" data-patient="Kolesterol Değeri" data-doctor="Serum Kolesterol (mg/dl)" title="Kan tahlilinizdeki Total Kolesterol değeri (örn. 200)">Kolesterol Değeri ℹ️</label>
+                            <input type="number" id="chol" value="200" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cp_type" class="dynamic-label has-tooltip" data-patient="Göğüs Ağrısı Şikayeti" data-doctor="Göğüs Ağrısı Tipi (Chest Pain Type)" title="Göğsünüzde hissettiğiniz ağrı türü.">Göğüs Ağrısı Şikayeti ℹ️</label>
+                        <select id="cp_type">
+                            <option value="Asemptomatik (Asymptomatic)" class="dyn-opt" data-patient="Ağrı Yok / Hissetmiyorum" data-doctor="Asemptomatik (Asymptomatic)">Ağrı Yok / Hissetmiyorum</option>
+                            <option value="Atipik Anjin (Atypical Angina)" class="dyn-opt" data-patient="Farklı Sebepli Ağrı" data-doctor="Atipik Anjin (Atypical Angina)">Farklı Sebepli Ağrı</option>
+                            <option value="Anjin Olmayan Ağrı (Non-anginal)" class="dyn-opt" data-patient="Kalp Dışı Göğüs Ağrısı" data-doctor="Anjin Olmayan Ağrı (Non-anginal)" selected>Kalp Dışı Göğüs Ağrısı</option>
+                            <option value="Tipik Anjin (Typical Angina)" class="dyn-opt" data-patient="Kalp Kaynaklı Sıkıştırıcı Ağrı" data-doctor="Tipik Anjin (Typical Angina)">Kalp Kaynaklı Sıkıştırıcı Ağrı</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group radio-group">
+                        <label class="dynamic-label has-tooltip" data-patient="Hareket Edince Göğüs Ağrısı Oluyor mu?" data-doctor="Egzersize Bağlı Göğüs Sıkışması? (Exang)" title="Yürürken, merdiven çıkarken veya efor sarf ederken göğsünüzde sıkışma hissediyor musunuz?">Hareket Edince Göğüs Ağrısı Oluyor mu? ℹ️</label>
+                        <div class="options">
+                            <label><input type="radio" name="exang" value="Evet (Yes)"> Evet</label>
+                            <label><input type="radio" name="exang" value="Hayır (No)" checked> Hayır</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="oldpeak" class="dynamic-label has-tooltip" data-patient="Efor Testi Sonucu (Bilmiyorsanız 0 bırakın)" data-doctor="ST Depresyonu (Oldpeak)" title="EKG veya Efor testi sonucundaki ST çökmesi değeri. Bilmiyorsanız varsayılan olarak 0 bırakın.">Efor Testi Sonucu (Bilmiyorsanız 0 bırakın) ℹ️</label>
+                        <div class="range-wrapper">
+                            <input type="range" id="oldpeak" min="0.0" max="6.0" step="0.1" value="0.0" oninput="this.nextElementSibling.value = this.value">
+                            <output>0.0</output>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <span>⚡ Canlı Risk Analizi Yap</span>
+                        <div class="spinner" id="btn-spinner"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="result-section">
+                <h2>🖥️ Yapay Zeka Analiz Merkezi</h2>
+                <div id="result-box" class="result-box placeholder">
+                    <p class="waiting-text">Sol taraftan verileri girip analizi başlattığınızda sonuç burada görünecektir...</p>
+                </div>
+                <small>Not: Bu sistem derin öğrenme modelleri kullanılarak test amaçlı geliştirilmiş bir simülasyondur.</small>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
