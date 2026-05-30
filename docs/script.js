@@ -14,9 +14,11 @@ modeSwitch.addEventListener('change', function() {
     if (isDoctor) {
         doctorLabel.classList.add('active');
         patientLabel.classList.remove('active');
+        document.body.className = 'theme-doctor'; // Karanlık Tema
     } else {
         patientLabel.classList.add('active');
         doctorLabel.classList.remove('active');
+        document.body.className = 'theme-patient'; // Aydınlık Tema
     }
 
     // Label Güncellemeleri
@@ -28,6 +30,12 @@ modeSwitch.addEventListener('change', function() {
     document.querySelectorAll('.dyn-opt').forEach(opt => {
         opt.innerHTML = isDoctor ? opt.getAttribute('data-doctor') : opt.getAttribute('data-patient');
     });
+    
+    // Temaya Göre İlerleme Halkası Renklerini Yeniden Çiz (Varsa)
+    const pctText = document.getElementById('result-percentage').innerText;
+    if(pctText !== '--%') {
+        setProgress(parseFloat(pctText));
+    }
 });
 
 // Sayfa yüklendiğinde varsayılan modu (Hasta Modu) aktifleştir
@@ -48,19 +56,23 @@ function setProgress(percent) {
     
     document.getElementById('result-percentage').innerText = `${percent.toFixed(1)}%`;
     
-    // Gradyan Renk Değişimi (Opsiyonel)
+    // Temaya ve Yüzdeye Göre Gradyan Renk Değişimi
     const gradStart = document.getElementById('grad-start');
     const gradEnd = document.getElementById('grad-end');
+    const isDoctor = document.body.classList.contains('theme-doctor');
     
     if (percent <= 20) {
-        gradStart.setAttribute('stop-color', '#34d399'); // Green
-        gradEnd.setAttribute('stop-color', '#059669');
+        // Düşük Risk (Sağlıklı)
+        gradStart.setAttribute('stop-color', isDoctor ? '#00f2fe' : '#34d399'); // Doctor: Cyan, Patient: Green
+        gradEnd.setAttribute('stop-color', isDoctor ? '#4facfe' : '#059669');
     } else if (percent <= 50) {
-        gradStart.setAttribute('stop-color', '#fbbf24'); // Yellow/Orange
-        gradEnd.setAttribute('stop-color', '#d97706');
+        // Orta Risk
+        gradStart.setAttribute('stop-color', isDoctor ? '#f9d423' : '#fbbf24'); // Yellow/Orange
+        gradEnd.setAttribute('stop-color', isDoctor ? '#f83600' : '#d97706');
     } else {
-        gradStart.setAttribute('stop-color', '#f87171'); // Red
-        gradEnd.setAttribute('stop-color', '#dc2626');
+        // Yüksek Risk
+        gradStart.setAttribute('stop-color', isDoctor ? '#ff0844' : '#f87171'); // Doctor: Neon Red/Pink, Patient: Red
+        gradEnd.setAttribute('stop-color', isDoctor ? '#ffb199' : '#dc2626');
     }
 }
 // --------------------------------------
