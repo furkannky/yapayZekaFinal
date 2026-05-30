@@ -21,8 +21,7 @@ modeSwitch.addEventListener('change', function() {
 
     // Label Güncellemeleri
     document.querySelectorAll('.dynamic-label').forEach(label => {
-        const hasInfo = label.classList.contains('has-tooltip');
-        label.innerHTML = isDoctor ? label.getAttribute('data-doctor') : label.getAttribute('data-patient') + (hasInfo && !isDoctor ? ' ℹ️' : '');
+        label.innerHTML = isDoctor ? label.getAttribute('data-doctor') : label.getAttribute('data-patient');
     });
 
     // Select Option Güncellemeleri
@@ -35,50 +34,33 @@ modeSwitch.addEventListener('change', function() {
 modeSwitch.dispatchEvent(new Event('change'));
 // -----------------------------------
 
-// --- Akordeon Mantığı ---
-document.querySelectorAll('.accordion-header').forEach(button => {
-    button.addEventListener('click', () => {
-        const accordionItem = button.parentElement;
-        const content = button.nextElementSibling;
-        
-        // Diğerlerini kapat (Opsiyonel)
-        document.querySelectorAll('.accordion-item').forEach(item => {
-            if(item !== accordionItem) {
-                item.classList.remove('active');
-                item.querySelector('.accordion-content').style.maxHeight = null;
-            }
-        });
+// --- Dairesel İlerleme Çubuğu (Circular Progress) Mantığı ---
+const circle = document.getElementById('progress-circle');
+const radius = circle.r.baseVal.value;
+const circumference = radius * 2 * Math.PI;
 
-        accordionItem.classList.toggle('active');
-        if (accordionItem.classList.contains('active')) {
-            content.style.maxHeight = content.scrollHeight + "px";
-        } else {
-            content.style.maxHeight = null;
-        }
-    });
-});
-// ------------------------
+circle.style.strokeDasharray = `${circumference} ${circumference}`;
+circle.style.strokeDashoffset = `${circumference}`;
 
-// --- Hız Göstergesi (Gauge) Mantığı ---
-function setGaugeValue(percentage) {
-    const gaugeFill = document.getElementById('gauge-fill');
-    const gaugeText = document.getElementById('gauge-text');
+function setProgress(percent) {
+    const offset = circumference - percent / 100 * circumference;
+    circle.style.strokeDashoffset = offset;
     
-    // 0 ile 0.5 turn arası dönüş
-    const turn = percentage / 200; 
-    gaugeFill.style.transform = `rotate(${turn}turn)`;
-    gaugeText.innerText = `${percentage.toFixed(1)}%`;
-
-    // Renk Ayarı
-    if (percentage <= 20) {
-        gaugeFill.style.backgroundColor = 'var(--success)';
-        gaugeText.style.color = 'var(--success)';
-    } else if (percentage <= 50) {
-        gaugeFill.style.backgroundColor = 'var(--warning)';
-        gaugeText.style.color = 'var(--warning)';
+    document.getElementById('result-percentage').innerText = `${percent.toFixed(1)}%`;
+    
+    // Gradyan Renk Değişimi (Opsiyonel)
+    const gradStart = document.getElementById('grad-start');
+    const gradEnd = document.getElementById('grad-end');
+    
+    if (percent <= 20) {
+        gradStart.setAttribute('stop-color', '#34d399'); // Green
+        gradEnd.setAttribute('stop-color', '#059669');
+    } else if (percent <= 50) {
+        gradStart.setAttribute('stop-color', '#fbbf24'); // Yellow/Orange
+        gradEnd.setAttribute('stop-color', '#d97706');
     } else {
-        gaugeFill.style.backgroundColor = 'var(--danger)';
-        gaugeText.style.color = 'var(--danger)';
+        gradStart.setAttribute('stop-color', '#f87171'); // Red
+        gradEnd.setAttribute('stop-color', '#dc2626');
     }
 }
 // --------------------------------------
@@ -87,9 +69,8 @@ function setGaugeValue(percentage) {
 document.getElementById('prediction-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const btn = document.querySelector('.btn-primary');
-    const resultBox = document.getElementById('result-box');
-    const resultTitle = document.getElementById('result-title');
+    const btn = document.querySelector('.btn-submit');
+    const resultLabel = document.getElementById('result-label');
     const resultRec = document.getElementById('result-recommendation');
     
     // UI Loading State
@@ -118,23 +99,20 @@ document.getElementById('prediction-form').addEventListener('submit', async func
 
         const data = await response.json();
 
-        // UI Güncelleme
-        resultBox.classList.remove('placeholder');
-        
         // Animasyonu tetiklemek için önce 0'a çek, sonra değere ayarla
-        setGaugeValue(0);
+        setProgress(0);
         setTimeout(() => {
-            setGaugeValue(data.risk_percentage);
+            setProgress(data.risk_percentage);
         }, 100);
 
         if (data.is_high_risk) {
-            resultTitle.innerText = "YÜKSEK RİSK";
-            resultTitle.className = "result-title danger-text";
-            resultRec.innerHTML = `<strong>Yapay Zeka Risk Skoru Yüksek!</strong><br>En yakın zamanda bir kardiyoloji uzmanına başvurulması tavsiye edilir. Lütfen ihmal etmeyin.`;
+            resultLabel.innerText = "Yüksek Risk 🚨";
+            resultLabel.style.color = "#dc2626";
+            resultRec.innerHTML = `<strong>Kardiyoloji uzmanına başvurun.</strong><br>Yapay zeka analizine göre değerleriniz risk eşiğinin üzerinde.`;
         } else {
-            resultTitle.innerText = "DÜŞÜK RİSK / SAĞLIKLI";
-            resultTitle.className = "result-title success-text";
-            resultRec.innerHTML = `<strong>Yapay Zeka Risk Skoru Düşük.</strong><br>Sağlıklı yaşam tarzınızı ve düzenli egzersizleri sürdürmeye devam edin.`;
+            resultLabel.innerText = "Sağlıklı ✅";
+            resultLabel.style.color = "#059669";
+            resultRec.innerHTML = `<strong>Değerleriniz normal.</strong><br>Sağlıklı yaşam tarzınızı ve düzenli egzersizleri sürdürmeye devam edin.`;
         }
 
     } catch (error) {
