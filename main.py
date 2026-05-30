@@ -30,9 +30,10 @@ tf.random.set_seed(42)
 web_model = None
 scaler = None
 X_columns = None
+X_mean_values = None
 
 def init_model():
-    global web_model, scaler, X_columns
+    global web_model, scaler, X_columns, X_mean_values
     print("Sistem yükleniyor, lütfen bekleyin...")
     
     # 2. Veriyi arka planda okuyup modeli ayağa kaldırıyoruz
@@ -56,6 +57,7 @@ def init_model():
     X_train_scaled = scaler.fit_transform(X_train)
     # X_test_scaled = scaler.transform(X_test)
     X_columns = X.columns
+    X_mean_values = X.mean()
 
     X_train_cnn = np.expand_dims(X_train_scaled, axis=-1)
 
@@ -96,7 +98,9 @@ class PredictionRequest(BaseModel):
 
 @app.post("/predict")
 def predict_risk(data: PredictionRequest):
-    user_row = pd.DataFrame(0, index=[0], columns=X_columns)
+    # Kullanıcının girmediği değerleri (örn: max nabız, damar sayısı vb.) ortalama değerlerle dolduruyoruz
+    # Böylece scaler bunları "0" (nötr) etkiye dönüştürür ve sonucu bozmaz.
+    user_row = pd.DataFrame([X_mean_values.values], columns=X_columns)
     
     user_row['age'] = data.age
     user_row['trestbps'] = data.trestbps
