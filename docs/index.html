@@ -3,163 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthSphere | Akıllı Kalp Sağlığı</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Klinik Komuta Merkezi | Kalp Sağlığı Analizi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-patient">
-    <div class="app-container">
-        <!-- Sidebar / Navigation (Simüle edilmiş) -->
-        <aside class="sidebar">
-            <div class="logo-area">
-                <div class="logo-icon">💖</div>
-                <div class="logo-text">HealthSphere</div>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <div class="header-titles">
+                <h1>Klinik Komuta Merkezi</h1>
+                <p>13 Parametreli Kapsamlı Kardiyovasküler Risk Analiz Modülü</p>
             </div>
-            <nav class="main-nav">
-                <a href="#" class="nav-item active">📊 Analiz Panosu</a>
-                <a href="#" class="nav-item">📚 Nasıl Çalışır?</a>
-            </nav>
-            <div class="mode-toggle-box">
-                <span class="mode-label" id="mode-patient-label">👤 Hasta Modu</span>
-                <label class="switch">
-                    <input type="checkbox" id="mode-switch">
-                    <span class="slider round"></span>
-                </label>
-                <span class="mode-label" id="mode-doctor-label">👨‍⚕️ Doktor Modu</span>
+            <div class="system-status">
+                <span class="status-dot"></span> Sistem Aktif (CNN Model)
             </div>
-        </aside>
+        </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="top-header">
-                <div class="greeting">
-                    <h1 class="dynamic-label" data-patient="Kardiyoloji Asistanı" data-doctor="Yapay Zeka Teşhis Modülü">Kardiyoloji Asistanı</h1>
-                    <p class="dynamic-label" data-patient="Değerlerinizi girin, kalbinizi yapay zeka ile dinleyelim." data-doctor="CNN + Attention modeli ile risk analizi yapın.">Değerlerinizi girin, kalbinizi yapay zeka ile dinleyelim.</p>
+        <!-- Sonuç Ekranı (Üst Kısım) -->
+        <div class="result-banner" id="result-banner">
+            <div class="result-content">
+                <div class="result-score" id="result-score">--%</div>
+                <div class="result-text">
+                    <h2 id="result-title">Veri Bekleniyor</h2>
+                    <p id="result-desc">Lütfen aşağıdaki 13 klinik parametreyi girerek analizi başlatın.</p>
                 </div>
-            </header>
+            </div>
+            <button type="submit" form="clinical-form" class="btn-analyze" id="btn-submit">
+                <span>VERİLERİ ANALİZ ET</span>
+                <div class="spinner" id="btn-spinner"></div>
+            </button>
+        </div>
 
-            <form id="prediction-form" class="dashboard-grid">
+        <form id="clinical-form" class="form-grid">
+            
+            <!-- 1. Sütun: Temel Bulgular -->
+            <section class="data-panel">
+                <h3 class="panel-title">1. Temel ve Kan Bulguları</h3>
                 
-                <!-- PROGRESS CARD (Large, Result) -->
-                <div class="card result-card">
-                    <h2 class="card-title">Yapay Zeka Risk Skoru</h2>
-                    <div class="circular-progress">
-                        <svg class="progress-ring" width="220" height="220">
-                            <circle class="bg-ring" stroke="#f1f5f9" stroke-width="18" fill="transparent" r="95" cx="110" cy="110"/>
-                            <circle class="anim-ring" id="progress-circle" stroke="url(#gradient-ring)" stroke-width="18" stroke-linecap="round" fill="transparent" r="95" cx="110" cy="110" style="stroke-dasharray: 596.9; stroke-dashoffset: 596.9;"/>
-                            <defs>
-                                <linearGradient id="gradient-ring" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#ec4899" id="grad-start" />
-                                    <stop offset="100%" stop-color="#8b5cf6" id="grad-end" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <div class="progress-content">
-                            <div class="percentage" id="result-percentage">--%</div>
-                            <div class="status-label" id="result-label">Bekleniyor</div>
-                        </div>
-                    </div>
-                    <div class="recommendation-text" id="result-recommendation">Analiz için bilgileri doldurup butona tıklayın.</div>
+                <div class="form-group">
+                    <label for="age">Yaş (Age)</label>
+                    <input type="number" id="age" value="55" min="1" max="120" required>
                 </div>
 
-                <!-- INFO CARDS (Inputs) -->
-                <div class="card input-card gradient-blue">
-                    <div class="card-header">
-                        <div class="icon-box">👤</div>
-                        <h3 class="dynamic-label" data-patient="Yaşınız" data-doctor="Yaş (Age)">Yaşınız</h3>
-                    </div>
-                    <div class="card-body">
-                        <output class="huge-value" id="age-out">45</output>
-                        <span class="unit">yaş</span>
-                        <input type="range" id="age" min="1" max="100" value="45" oninput="document.getElementById('age-out').value = this.value">
-                    </div>
+                <div class="form-group">
+                    <label for="sex">Cinsiyet (Sex)</label>
+                    <select id="sex">
+                        <option value="Erkek (Male)">Erkek (Male)</option>
+                        <option value="Kadın (Female)">Kadın (Female)</option>
+                    </select>
                 </div>
 
-                <div class="card input-card">
-                    <div class="card-header">
-                        <div class="icon-box gradient-pink">⚧</div>
-                        <h3 class="dynamic-label" data-patient="Cinsiyet" data-doctor="Cinsiyet (Sex)">Cinsiyet</h3>
-                    </div>
-                    <div class="card-body radio-pills">
-                        <label class="pill active"><input type="radio" name="sex" value="Erkek (Male)" checked> Erkek</label>
-                        <label class="pill"><input type="radio" name="sex" value="Kadın (Female)"> Kadın</label>
-                    </div>
+                <div class="form-group">
+                    <label for="trestbps">Dinlenme Kan Basıncı (trestbps) [mmHg]</label>
+                    <input type="number" id="trestbps" value="130" required>
                 </div>
 
-                <div class="card input-card">
-                    <div class="card-header">
-                        <div class="icon-box gradient-orange">🩸</div>
-                        <h3 class="dynamic-label" data-patient="Büyük Tansiyon" data-doctor="Dinlenme Kan Basıncı (trestbps)">Büyük Tansiyon</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="input-wrapper">
-                            <input type="number" id="trestbps" value="120" required class="large-input">
-                            <span class="unit">mmHg</span>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="chol">Serum Kolesterol (chol) [mg/dl]</label>
+                    <input type="number" id="chol" value="240" required>
                 </div>
 
-                <div class="card input-card">
-                    <div class="card-header">
-                        <div class="icon-box gradient-purple">🔬</div>
-                        <h3 class="dynamic-label" data-patient="Kolesterol" data-doctor="Serum Kolesterol (chol)">Kolesterol</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="input-wrapper">
-                            <input type="number" id="chol" value="200" required class="large-input">
-                            <span class="unit">mg/dl</span>
-                        </div>
+                <div class="form-group">
+                    <label for="fbs">Açlık Kan Şekeri > 120 mg/dl (fbs)</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="fbs" value="Hayır" checked> Hayır</label>
+                        <label><input type="radio" name="fbs" value="Evet (>120 mg/dl)"> Evet</label>
                     </div>
                 </div>
+            </section>
 
-                <!-- Select Box / Wide Card -->
-                <div class="card input-card wide-card">
-                    <div class="card-header">
-                        <div class="icon-box gradient-teal">🫀</div>
-                        <h3 class="dynamic-label" data-patient="Göğüs Ağrısı Şikayeti" data-doctor="Göğüs Ağrısı Tipi (cp)">Göğüs Ağrısı Şikayeti</h3>
-                    </div>
-                    <div class="card-body">
-                        <select id="cp_type" class="modern-select">
-                            <option value="Asemptomatik (Asymptomatic)" class="dyn-opt" data-patient="Hiç Ağrı Yok / Hissetmiyorum" data-doctor="Asemptomatik (Asymptomatic)">Hiç Ağrı Yok / Hissetmiyorum</option>
-                            <option value="Atipik Anjin (Atypical Angina)" class="dyn-opt" data-patient="Farklı Sebepli (Kalp Dışı) Ağrı" data-doctor="Atipik Anjin (Atypical Angina)">Farklı Sebepli (Kalp Dışı) Ağrı</option>
-                            <option value="Anjin Olmayan Ağrı (Non-anginal)" class="dyn-opt" data-patient="Kas/Kemik Kaynaklı Göğüs Ağrısı" data-doctor="Anjin Olmayan Ağrı (Non-anginal)" selected>Kas/Kemik Kaynaklı Göğüs Ağrısı</option>
-                            <option value="Tipik Anjin (Typical Angina)" class="dyn-opt" data-patient="Tam Kalp Kaynaklı Sıkıştırıcı Ağrı" data-doctor="Tipik Anjin (Typical Angina)">Tam Kalp Kaynaklı Sıkıştırıcı Ağrı</option>
-                        </select>
+            <!-- 2. Sütun: Göğüs Ağrısı ve EKG -->
+            <section class="data-panel">
+                <h3 class="panel-title">2. EKG ve Şikayet Bulguları</h3>
+
+                <div class="form-group">
+                    <label for="cp_type">Göğüs Ağrısı Tipi (cp)</label>
+                    <select id="cp_type">
+                        <option value="Asemptomatik (Asymptomatic)">Asemptomatik (Asymptomatic)</option>
+                        <option value="Atipik Anjin (Atypical Angina)">Atipik Anjin (Atypical Angina)</option>
+                        <option value="Anjin Olmayan Ağrı (Non-anginal)">Anjin Olmayan Ağrı (Non-anginal)</option>
+                        <option value="Tipik Anjin (Typical Angina)">Tipik Anjin (Typical Angina)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="restecg">Dinlenme EKG Sonucu (restecg)</label>
+                    <select id="restecg">
+                        <option value="Normal">Normal</option>
+                        <option value="ST-T Anormalliği">ST-T Anormalliği (ST-T wave abnormality)</option>
+                        <option value="LV Hipertrofisi">Sol Ventrikül Hipertrofisi (LV hypertrophy)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="thalch">Ulaşılan Maks. Kalp Hızı (thalch)</label>
+                    <input type="number" id="thalch" value="150" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ca">Renklendirilmiş Ana Damar Sayısı (ca) [0-3]</label>
+                    <input type="number" id="ca" value="0" min="0" max="3" required>
+                </div>
+            </section>
+
+            <!-- 3. Sütun: Efor ve Talasemi Testleri -->
+            <section class="data-panel">
+                <h3 class="panel-title">3. Efor Testi ve Görüntüleme</h3>
+
+                <div class="form-group">
+                    <label for="exang">Egzersize Bağlı Anjin (exang)</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="exang" value="Hayır (No)" checked> Hayır</label>
+                        <label><input type="radio" name="exang" value="Evet (Yes)"> Evet</label>
                     </div>
                 </div>
 
-                <div class="card input-card">
-                    <div class="card-header">
-                        <div class="icon-box gradient-red">🏃</div>
-                        <h3 class="dynamic-label" data-patient="Hareket Edince Ağrı?" data-doctor="Egzersize Bağlı Sıkışma (exang)">Hareket Edince Ağrı?</h3>
-                    </div>
-                    <div class="card-body radio-pills">
-                        <label class="pill"><input type="radio" name="exang" value="Evet (Yes)"> Evet</label>
-                        <label class="pill active"><input type="radio" name="exang" value="Hayır (No)" checked> Hayır</label>
-                    </div>
+                <div class="form-group">
+                    <label for="oldpeak">ST Depresyonu / Çökmesi (oldpeak)</label>
+                    <input type="number" id="oldpeak" value="0.0" step="0.1" required>
                 </div>
 
-                <div class="card input-card">
-                    <div class="card-header">
-                        <div class="icon-box gradient-dark">📈</div>
-                        <h3 class="dynamic-label" data-patient="Efor Testi Sonucu" data-doctor="ST Depresyonu (oldpeak)">Efor Testi Sonucu</h3>
-                    </div>
-                    <div class="card-body">
-                        <output class="huge-value" id="oldpeak-out">0.0</output>
-                        <input type="range" id="oldpeak" min="0.0" max="6.0" step="0.1" value="0.0" oninput="document.getElementById('oldpeak-out').value = this.value">
-                        <small class="helper-text">Bilmiyorsanız 0 bırakın.</small>
-                    </div>
+                <div class="form-group">
+                    <label for="slope">ST Segment Eğimi (slope)</label>
+                    <select id="slope">
+                        <option value="Yukarı Eğimli (Upsloping)">Yukarı Eğimli (Upsloping)</option>
+                        <option value="Düz (Flat)">Düz (Flat)</option>
+                        <option value="Aşağı Eğimli (Downsloping)">Aşağı Eğimli (Downsloping)</option>
+                    </select>
                 </div>
 
-                <div class="action-area wide-card">
-                    <button type="submit" class="btn-submit">
-                        <span>✨ Yapay Zeka ile Analiz Et</span>
-                        <div class="spinner" id="btn-spinner"></div>
-                    </button>
+                <div class="form-group">
+                    <label for="thal">Talasemi Durumu (thal)</label>
+                    <select id="thal">
+                        <option value="Normal">Normal</option>
+                        <option value="Sabit Hata (Fixed Defect)">Sabit Hata (Fixed Defect)</option>
+                        <option value="Geri Döndürülebilir Hata (Reversable Defect)">Geri Döndürülebilir Hata (Reversable Defect)</option>
+                    </select>
                 </div>
+            </section>
 
-            </form>
-        </main>
+        </form>
     </div>
 
     <script src="script.js"></script>

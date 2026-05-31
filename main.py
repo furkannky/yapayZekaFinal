@@ -92,9 +92,15 @@ class PredictionRequest(BaseModel):
     sex: str
     trestbps: float
     chol: float
-    oldpeak: float
-    cp_type: str
+    fbs: str
+    restecg: str
+    thalch: float
     exang: str
+    oldpeak: float
+    slope: str
+    ca: float
+    thal: str
+    cp_type: str
 
 @app.post("/predict")
 def predict_risk(data: PredictionRequest):
@@ -105,27 +111,47 @@ def predict_risk(data: PredictionRequest):
     user_row['age'] = data.age
     user_row['trestbps'] = data.trestbps
     user_row['chol'] = data.chol
+    user_row['thalch'] = data.thalch
     user_row['oldpeak'] = data.oldpeak
+    user_row['ca'] = data.ca
     
     # Cinsiyet kontrolü
     if data.sex == "Erkek (Male)":
         if 'sex_Male' in user_row.columns: user_row['sex_Male'] = 1
-        if 'sex_1' in user_row.columns: user_row['sex_1'] = 1
         
     # Egzersize bağlı anjin kontrolü
     if data.exang == "Evet (Yes)":
         if 'exang_True' in user_row.columns: user_row['exang_True'] = 1
-        if 'exang_1' in user_row.columns: user_row['exang_1'] = 1
+
+    # Açlık kan şekeri
+    if data.fbs == "Evet (>120 mg/dl)":
+        if 'fbs_True' in user_row.columns: user_row['fbs_True'] = 1
         
     # Göğüs ağrısı tipi kontrolü
-    if data.cp_type == "Asemptomatik (Asymptomatic)":
-        pass 
-    elif data.cp_type == "Atipik Anjin (Atypical Angina)":
+    if data.cp_type == "Atipik Anjin (Atypical Angina)":
         if 'cp_atypical angina' in user_row.columns: user_row['cp_atypical angina'] = 1
     elif data.cp_type == "Anjin Olmayan Ağrı (Non-anginal)":
         if 'cp_non-anginal' in user_row.columns: user_row['cp_non-anginal'] = 1
     elif data.cp_type == "Tipik Anjin (Typical Angina)":
         if 'cp_typical angina' in user_row.columns: user_row['cp_typical angina'] = 1
+
+    # Dinlenme EKG
+    if data.restecg == "Normal":
+        if 'restecg_normal' in user_row.columns: user_row['restecg_normal'] = 1
+    elif data.restecg == "ST-T Anormalliği":
+        if 'restecg_st-t abnormality' in user_row.columns: user_row['restecg_st-t abnormality'] = 1
+
+    # ST Segment Eğimi
+    if data.slope == "Düz (Flat)":
+        if 'slope_flat' in user_row.columns: user_row['slope_flat'] = 1
+    elif data.slope == "Yukarı Eğimli (Upsloping)":
+        if 'slope_upsloping' in user_row.columns: user_row['slope_upsloping'] = 1
+
+    # Talasemi
+    if data.thal == "Normal":
+        if 'thal_normal' in user_row.columns: user_row['thal_normal'] = 1
+    elif data.thal == "Geri Döndürülebilir Hata (Reversable Defect)":
+        if 'thal_reversable defect' in user_row.columns: user_row['thal_reversable defect'] = 1
 
     user_scaled = scaler.transform(user_row)
     user_cnn = np.expand_dims(user_scaled, axis=-1)
