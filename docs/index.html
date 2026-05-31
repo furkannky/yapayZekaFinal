@@ -2,146 +2,251 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klinik Komuta Merkezi | Kalp Sağlığı Analizi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Heart AI | EcoLife Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="dashboard">
-        <header class="header">
-            <div class="header-titles">
-                <h1>Klinik Komuta Merkezi</h1>
-                <p>13 Parametreli Kapsamlı Kardiyovasküler Risk Analiz Modülü</p>
+    <!-- Organik Arka Plan -->
+    <div class="organic-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Sonuç Modal (Glassmorphism Modal) -->
+    <div id="result-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-card" id="modal-card">
+            <div class="modal-header">
+                <div class="icon-circle" id="modal-icon-bg">
+                    <svg id="modal-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 id="result-title">Analiz Sonucu</h3>
             </div>
-            <div class="system-status">
-                <span class="status-dot"></span> Sistem Aktif (CNN Model)
+            <div class="modal-body">
+                <h1 id="result-score" class="score-text">--%</h1>
+                <p id="result-desc">Sonuç detayı buraya gelecek.</p>
+            </div>
+            <button class="btn-primary" onclick="closeModal()">Kapat</button>
+        </div>
+    </div>
+
+    <!-- Uygulama İskeleti (App Scaffold) -->
+    <div class="app-scaffold">
+        
+        <!-- Üst Başlık (Header) -->
+        <header class="app-header">
+            <div class="header-titles">
+                <h1 class="brand-title fade-in-down-1">HEART AI</h1>
+                <h2 class="greeting fade-in-down-2">Hoş geldin, Doktor 👋</h2>
+            </div>
+            <div class="header-actions fade-in-right">
+                <div class="glass-card notification-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                </div>
             </div>
         </header>
 
-        <!-- Sonuç Ekranı (Üst Kısım) -->
-        <div class="result-banner" id="result-banner">
-            <div class="result-content">
-                <div class="result-score" id="result-score">--%</div>
-                <div class="result-text">
-                    <h2 id="result-title">Veri Bekleniyor</h2>
-                    <p id="result-desc">Lütfen aşağıdaki 13 klinik parametreyi girerek analizi başlatın.</p>
+        <!-- Ana Banner Kartı (Carbon Card stili) -->
+        <div class="banner-wrapper fade-in-up-1">
+            <div class="glass-card banner-card">
+                <div class="banner-header">
+                    <div class="icon-circle bg-red-light">
+                        <svg class="color-red" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="banner-title">Kalp Kriz Riskini Merak Ediyor Musunuz?</h3>
+                </div>
+                <p class="banner-text">13 klinik parametreyi doldurarak, güncel yapay zeka modelimizin hasta analizini anında yapmasını sağlayın.</p>
+                <div class="banner-action">
+                    <button type="submit" form="clinical-form" class="btn-primary" id="btn-submit">
+                        <span>Analiz Et</span>
+                        <div class="spinner" id="btn-spinner"></div>
+                    </button>
                 </div>
             </div>
-            <button type="submit" form="clinical-form" class="btn-analyze" id="btn-submit">
-                <span>VERİLERİ ANALİZ ET</span>
-                <div class="spinner" id="btn-spinner"></div>
-            </button>
         </div>
 
-        <form id="clinical-form" class="form-grid">
+        <h3 class="section-title fade-in-up-2">Klinik Servisler & Bulgular</h3>
+
+        <!-- Form Elemanları (Grid Menu stili) -->
+        <form id="clinical-form" class="inputs-grid fade-in-up-3">
             
-            <!-- 1. Sütun: Temel Bulgular -->
-            <section class="data-panel">
-                <h3 class="panel-title">1. Temel ve Kan Bulguları</h3>
-                
-                <div class="form-group">
-                    <label for="age">Yaş (Age)</label>
-                    <input type="number" id="age" value="55" min="1" max="120" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="sex">Cinsiyet (Sex)</label>
-                    <select id="sex">
-                        <option value="Erkek (Male)">Erkek (Male)</option>
-                        <option value="Kadın (Female)">Kadın (Female)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="trestbps">Dinlenme Kan Basıncı (trestbps) [mmHg]</label>
-                    <input type="number" id="trestbps" value="130" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="chol">Serum Kolesterol (chol) [mg/dl]</label>
-                    <input type="number" id="chol" value="240" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="fbs">Açlık Kan Şekeri > 120 mg/dl (fbs)</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="fbs" value="Hayır" checked> Hayır</label>
-                        <label><input type="radio" name="fbs" value="Evet (>120 mg/dl)"> Evet</label>
+            <!-- Yaş -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-blue-light">
+                        <svg class="color-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                     </div>
+                    <label>Yaş</label>
                 </div>
-            </section>
+                <input type="number" id="age" value="55" min="1" max="120" required>
+            </div>
 
-            <!-- 2. Sütun: Göğüs Ağrısı ve EKG -->
-            <section class="data-panel">
-                <h3 class="panel-title">2. EKG ve Şikayet Bulguları</h3>
-
-                <div class="form-group">
-                    <label for="cp_type">Göğüs Ağrısı Tipi (cp)</label>
-                    <select id="cp_type">
-                        <option value="Asemptomatik (Asymptomatic)">Asemptomatik (Asymptomatic)</option>
-                        <option value="Atipik Anjin (Atypical Angina)">Atipik Anjin (Atypical Angina)</option>
-                        <option value="Anjin Olmayan Ağrı (Non-anginal)">Anjin Olmayan Ağrı (Non-anginal)</option>
-                        <option value="Tipik Anjin (Typical Angina)">Tipik Anjin (Typical Angina)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="restecg">Dinlenme EKG Sonucu (restecg)</label>
-                    <select id="restecg">
-                        <option value="Normal">Normal</option>
-                        <option value="ST-T Anormalliği">ST-T Anormalliği (ST-T wave abnormality)</option>
-                        <option value="LV Hipertrofisi">Sol Ventrikül Hipertrofisi (LV hypertrophy)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="thalch">Ulaşılan Maks. Kalp Hızı (thalch)</label>
-                    <input type="number" id="thalch" value="150" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="ca">Renklendirilmiş Ana Damar Sayısı (ca) [0-3]</label>
-                    <input type="number" id="ca" value="0" min="0" max="3" required>
-                </div>
-            </section>
-
-            <!-- 3. Sütun: Efor ve Talasemi Testleri -->
-            <section class="data-panel">
-                <h3 class="panel-title">3. Efor Testi ve Görüntüleme</h3>
-
-                <div class="form-group">
-                    <label for="exang">Egzersize Bağlı Anjin (exang)</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="exang" value="Hayır (No)" checked> Hayır</label>
-                        <label><input type="radio" name="exang" value="Evet (Yes)"> Evet</label>
+            <!-- Cinsiyet -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-pink-light">
+                        <svg class="color-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                     </div>
+                    <label>Cinsiyet</label>
                 </div>
+                <select id="sex">
+                    <option>Erkek (Male)</option>
+                    <option>Kadın (Female)</option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label for="oldpeak">ST Depresyonu / Çökmesi (oldpeak)</label>
-                    <input type="number" id="oldpeak" value="0.0" step="0.1" required>
+            <!-- Dinlenme Kan Basıncı -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-red-light">
+                        <svg class="color-red" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <label>Kan Basıncı</label>
                 </div>
+                <input type="number" id="trestbps" value="130" required>
+            </div>
 
-                <div class="form-group">
-                    <label for="slope">ST Segment Eğimi (slope)</label>
-                    <select id="slope">
-                        <option value="Yukarı Eğimli (Upsloping)">Yukarı Eğimli (Upsloping)</option>
-                        <option value="Düz (Flat)">Düz (Flat)</option>
-                        <option value="Aşağı Eğimli (Downsloping)">Aşağı Eğimli (Downsloping)</option>
-                    </select>
+            <!-- Kolesterol -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-yellow-light">
+                        <svg class="color-yellow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                    </div>
+                    <label>Kolesterol</label>
                 </div>
+                <input type="number" id="chol" value="240" required>
+            </div>
 
-                <div class="form-group">
-                    <label for="thal">Talasemi Durumu (thal)</label>
-                    <select id="thal">
-                        <option value="Normal">Normal</option>
-                        <option value="Sabit Hata (Fixed Defect)">Sabit Hata (Fixed Defect)</option>
-                        <option value="Geri Döndürülebilir Hata (Reversable Defect)">Geri Döndürülebilir Hata (Reversable Defect)</option>
-                    </select>
+            <!-- Şeker -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-orange-light">
+                        <svg class="color-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                    </div>
+                    <label>Kan Şekeri > 120</label>
                 </div>
-            </section>
+                <select id="fbs">
+                    <option value="Hayır">Hayır</option>
+                    <option value="Evet (>120 mg/dl)">Evet</option>
+                </select>
+            </div>
 
+            <!-- Göğüs Ağrısı -->
+            <div class="glass-card input-card wide-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-red-light">
+                        <svg class="color-red" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                    </div>
+                    <label>Göğüs Ağrısı Tipi</label>
+                </div>
+                <select id="cp_type">
+                    <option>Asemptomatik (Asymptomatic)</option>
+                    <option>Atipik Anjin (Atypical Angina)</option>
+                    <option>Anjin Olmayan Ağrı (Non-anginal)</option>
+                    <option>Tipik Anjin (Typical Angina)</option>
+                </select>
+            </div>
+
+            <!-- Dinlenme EKG -->
+            <div class="glass-card input-card wide-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-green-light">
+                        <svg class="color-green" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    </div>
+                    <label>Dinlenme EKG</label>
+                </div>
+                <select id="restecg">
+                    <option>Normal</option>
+                    <option>ST-T Anormalliği</option>
+                    <option>LV Hipertrofisi</option>
+                </select>
+            </div>
+
+            <!-- Maks Kalp Hızı -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-teal-light">
+                        <svg class="color-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <label>Maks. Kalp Hızı</label>
+                </div>
+                <input type="number" id="thalch" value="150" required>
+            </div>
+
+            <!-- Damar Sayısı -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-purple-light">
+                        <svg class="color-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>
+                    </div>
+                    <label>Damar (ca)</label>
+                </div>
+                <input type="number" id="ca" value="0" min="0" max="3" required>
+            </div>
+
+            <!-- Egzersiz Anjin -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-orange-light">
+                        <svg class="color-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <label>Egzersiz Anjini</label>
+                </div>
+                <select id="exang">
+                    <option value="Hayır (No)">Hayır</option>
+                    <option value="Evet (Yes)">Evet</option>
+                </select>
+            </div>
+
+            <!-- Oldpeak -->
+            <div class="glass-card input-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-blue-light">
+                        <svg class="color-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    </div>
+                    <label>ST Çökmesi</label>
+                </div>
+                <input type="number" id="oldpeak" value="0.0" step="0.1" required>
+            </div>
+
+            <!-- Slope -->
+            <div class="glass-card input-card wide-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-teal-light">
+                        <svg class="color-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
+                    </div>
+                    <label>ST Eğimi (Slope)</label>
+                </div>
+                <select id="slope">
+                    <option>Yukarı Eğimli (Upsloping)</option>
+                    <option>Düz (Flat)</option>
+                    <option>Aşağı Eğimli (Downsloping)</option>
+                </select>
+            </div>
+
+            <!-- Talasemi -->
+            <div class="glass-card input-card wide-card">
+                <div class="input-header">
+                    <div class="icon-circle bg-purple-light">
+                        <svg class="color-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                    </div>
+                    <label>Talasemi Durumu</label>
+                </div>
+                <select id="thal">
+                    <option>Normal</option>
+                    <option>Sabit Hata (Fixed Defect)</option>
+                    <option>Geri Döndürülebilir Hata (Reversable Defect)</option>
+                </select>
+            </div>
+            
         </form>
     </div>
 
